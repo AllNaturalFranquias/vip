@@ -93,7 +93,7 @@
   <!-- ===== Tela de cadastro ===== -->
   <section id="tela-cadastro">
     <div class="hero">
-      <span class="tag">⭐ Lista VIP</span>
+      <span class="tag" id="tag-cidade">⭐ Lista VIP</span>
       <h1>Seja parte do grupo <em>exclusivo</em> do All Natural</h1>
       <p>Quem é VIP fica sabendo de tudo antes — e ganha vantagens que não aparecem em nenhum outro lugar.</p>
     </div>
@@ -114,6 +114,7 @@
       <div class="benef"><i>📣</i><b>Novidades</b><span>Lojas, eventos e cardápio antes de todos</span></div>
     </div>
 
+    <div class="msg" id="msg-topo"></div>
     <div class="meu-cupom" id="aviso-meu-cupom">Você já tem um cupom neste celular. <a id="link-meu-cupom" href="#">Ver meu cupom →</a></div>
 
     <form id="form" novalidate>
@@ -144,7 +145,7 @@
         <div id="qr"></div>
         <div class="codigo" id="codigo"></div>
         <div class="status" id="status"></div>
-        <div class="cupom-info" id="cupom-info">Apresente este QR code no caixa de qualquer loja All Natural. Ele vale <b>uma única vez</b> e é invalidado assim que for lido.</div>
+        <div class="cupom-info" id="cupom-info">Apresente este QR code no caixa de uma loja All Natural. Ele vale <b>uma única vez</b> e é invalidado assim que for lido.</div>
       </div>
     </div>
     <div id="acoes">
@@ -177,6 +178,8 @@
 const SUPABASE_URL = 'https://nhuotdwfzowydrjeyttc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5odW90ZHdmem93eWRyamV5dHRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTM2NDAsImV4cCI6MjA5NTk4OTY0MH0.JovSWvkJ5OdX1tauz7sYOuyDIm1Mbcx5gJF8Zb20oe4';
 const LS_KEY = 'an_vip_token';
+const CIDADE = (new URLSearchParams(location.search).get('cidade') || 'curitiba').toLowerCase().replace(/[^a-z]/g, '');
+const lojas = cid => cid ? `qualquer loja All Natural de ${cid}` : 'qualquer loja All Natural';
 const $ = id => document.getElementById(id);
 
 async function rpc(fn, args = {}) {
@@ -213,14 +216,19 @@ $('tel').addEventListener('input', e => {
 
 async function carregarStatus() {
   try {
-    const { campanha: c } = await rpc('vip_status');
+    const { cidade, campanha: c } = await rpc('vip_status', { p_cidade: CIDADE });
+    if (!cidade) {
+      $('form').classList.add('hide');
+      return msg($('msg-topo'), 'erro', 'Link inválido. Use o link da Lista VIP da sua cidade.');
+    }
+    $('tag-cidade').textContent = `⭐ Lista VIP · ${cidade}`;
     if (!c) return;
     $('bloco-campanha').classList.remove('hide');
-    $('promo-chamada').textContent = `Presente para os ${c.limite} primeiros`;
+    $('promo-chamada').textContent = `Presente para os ${c.limite} primeiros de ${cidade}`;
     $('promo-titulo').textContent = c.titulo;
     $('promo-produto').textContent = c.produto;
     $('regras').classList.remove('hide');
-    $('regras').textContent = `${c.titulo} — ${c.produto}: cupom pessoal e intransferível, válido uma única vez em qualquer loja All Natural até ${fmtData(c.validade)}, mediante leitura do QR code no caixa. Limitado aos ${c.limite} primeiros cadastros, um por pessoa (e-mail e telefone).`;
+    $('regras').textContent = `${c.titulo} — ${c.produto}: cupom pessoal e intransferível, válido uma única vez em ${lojas(cidade)} até ${fmtData(c.validade)}, mediante leitura do QR code no caixa. Limitado aos ${c.limite} primeiros cadastros, um por pessoa (e-mail e telefone).`;
     if (c.tem_cupons) $('btn-enviar').textContent = 'Quero ser VIP e ganhar meu cupom';
     else $('promo-chamada').textContent = 'Cupons esgotados — a Lista VIP continua aberta';
   } catch { /* sem campanha visível: a página segue funcionando só como cadastro VIP */ }
@@ -285,13 +293,13 @@ $('form').addEventListener('submit', async e => {
     return msg(m, 'erro', `O endereço <b>@${esc(dom)}</b> não existe. Confira seu e-mail.`);
   }
   try {
-    const r = await rpc('vip_cadastrar', { p_nome: nome, p_email: email, p_telefone: tel, p_aceite: true });
+    const r = await rpc('vip_cadastrar', { p_cidade: CIDADE, p_nome: nome, p_email: email, p_telefone: tel, p_aceite: true });
     if (r.status === 'ok') {
       lsSet(r.token);
       enviarEmail({ token: r.token });
       history.replaceState(null, '', `?c=${r.token}`);
       mostrarCupom(r.token, { novo: true, validade: r.validade,
-        titulo: r.titulo, produto: r.produto, nome: nome.split(' ')[0], status: 'valido', email });
+        titulo: r.titulo, produto: r.produto, cidade: r.cidade, nome: nome.split(' ')[0], status: 'valido', email });
     } else if (r.status === 'lista') {
       enviarEmail({ email });
       $('tela-cadastro').classList.add('hide'); $('tela-lista').classList.remove('hide');
@@ -341,15 +349,15 @@ async function mostrarCupom(token, dados) {
     $('cupom').classList.add('usado'); $('acoes').classList.add('hide');
   } else {
     st.className = 'status st-valido'; st.textContent = `Válido até ${val}`;
-    $('cupom-info').innerHTML = `<b>Como usar:</b> apresente este QR code no caixa de qualquer loja All Natural até <b>${val}</b>. ` +
+    $('cupom-info').innerHTML = `<b>Como usar:</b> apresente este QR code no caixa de ${lojas(dados.cidade)} até <b>${val}</b>. ` +
       `Ele vale <b>uma única vez</b> e é invalidado assim que for lido.`;
   }
   $('cupom-titulo').textContent = dados.nome ? `${dados.nome}, você é VIP!` : 'Seu cupom VIP';
   $('cupom-sub').innerHTML = dados.novo
     ? `Você garantiu seu cupom exclusivo.<span class="aviso-print">📸 <b>Tire um print desta tela agora</b> e apresente o QR code ` +
-      `no caixa de qualquer loja All Natural até <b>${val}</b>. A cópia por e-mail para <b>${esc(dados.email)}</b> ` +
+      `no caixa de ${lojas(dados.cidade)} até <b>${val}</b>. A cópia por e-mail para <b>${esc(dados.email)}</b> ` +
       `pode demorar alguns minutos (confira também o spam).</span>`
-    : 'Apresente no caixa de qualquer loja All Natural.';
+    : `Apresente no caixa de ${lojas(dados.cidade)}.`;
 
   const textoWa = `🥕 Meu cupom VIP All Natural — ${dados.titulo}: ${dados.produto} (válido até ${val}): ${linkCupom(token)}`;
   $('btn-wa').href = `https://wa.me/?text=${encodeURIComponent(textoWa)}`;
@@ -381,7 +389,7 @@ function salvarImagem(token, val, dados) {
   g.fillStyle = '#6B5E52'; g.font = '400 26px Inter, sans-serif';
   g.fillText(`Válido até ${val} · uso único`, W / 2, 890);
   g.fillText('Apresente no caixa de qualquer', W / 2, 935);
-  g.fillText('loja All Natural', W / 2, 970);
+  g.fillText(dados.cidade ? `loja All Natural de ${dados.cidade}` : 'loja All Natural', W / 2, 970);
   const url = c.toDataURL('image/png');
   // navegador do Instagram/Facebook bloqueia download: mostra a imagem para "pressionar e segurar"
   $('img-cupom').src = url;
