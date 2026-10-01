@@ -144,7 +144,7 @@
         <div id="qr"></div>
         <div class="codigo" id="codigo"></div>
         <div class="status" id="status"></div>
-        <div class="cupom-info" id="cupom-info">Mostre este QR code no caixa. Ele vale <b>uma única vez</b> e é invalidado assim que for lido.</div>
+        <div class="cupom-info" id="cupom-info">Apresente este QR code no caixa de qualquer loja All Natural. Ele vale <b>uma única vez</b> e é invalidado assim que for lido.</div>
       </div>
     </div>
     <div id="acoes">
@@ -341,12 +341,14 @@ async function mostrarCupom(token, dados) {
     $('cupom').classList.add('usado'); $('acoes').classList.add('hide');
   } else {
     st.className = 'status st-valido'; st.textContent = `Válido até ${val}`;
+    $('cupom-info').innerHTML = `<b>Como usar:</b> apresente este QR code no caixa de qualquer loja All Natural até <b>${val}</b>. ` +
+      `Ele vale <b>uma única vez</b> e é invalidado assim que for lido.`;
   }
   $('cupom-titulo').textContent = dados.nome ? `${dados.nome}, você é VIP!` : 'Seu cupom VIP';
   $('cupom-sub').innerHTML = dados.novo
-    ? `Você garantiu seu cupom exclusivo.<span class="aviso-print">📸 <b>Tire um print desta tela agora</b> com o QR code abaixo. ` +
-      `Também enviamos uma cópia para <b>${esc(dados.email)}</b>, mas o e-mail pode demorar alguns minutos para chegar ` +
-      `(confira também o spam).</span>`
+    ? `Você garantiu seu cupom exclusivo.<span class="aviso-print">📸 <b>Tire um print desta tela agora</b> e apresente o QR code ` +
+      `no caixa de qualquer loja All Natural até <b>${val}</b>. A cópia por e-mail para <b>${esc(dados.email)}</b> ` +
+      `pode demorar alguns minutos (confira também o spam).</span>`
     : 'Apresente no caixa de qualquer loja All Natural.';
 
   const textoWa = `🥕 Meu cupom VIP All Natural — ${dados.titulo}: ${dados.produto} (válido até ${val}): ${linkCupom(token)}`;
@@ -378,7 +380,8 @@ function salvarImagem(token, val, dados) {
   g.fillText(fmtCodigo(token), W / 2, 830);
   g.fillStyle = '#6B5E52'; g.font = '400 26px Inter, sans-serif';
   g.fillText(`Válido até ${val} · uso único`, W / 2, 890);
-  g.fillText('Mostre este QR code no caixa', W / 2, 935);
+  g.fillText('Apresente no caixa de qualquer', W / 2, 935);
+  g.fillText('loja All Natural', W / 2, 970);
   const url = c.toDataURL('image/png');
   // navegador do Instagram/Facebook bloqueia download: mostra a imagem para "pressionar e segurar"
   $('img-cupom').src = url;
