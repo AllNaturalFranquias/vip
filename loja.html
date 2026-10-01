@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Leitor VIP · All Natural</title>
+<meta name="theme-color" content="#1C1C1C">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥕</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+  :root{--laranja:#F7941D;--escuro:#1C1C1C;--fundo:#FFF8F0;--card:#fff;--sub:#6B5E52;--borda:#EADBC8;--verde:#2E7D32;--erro:#B42318}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--fundo);color:var(--escuro);font-family:Inter,system-ui,sans-serif;min-height:100vh}
+  header{background:var(--escuro);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px}
+  header img{height:30px}
+  header .uni{margin-left:auto;font-size:13px;opacity:.85;display:flex;align-items:center;gap:10px}
+  header button{background:#ffffff1a;color:#fff;border:0;border-radius:8px;padding:6px 10px;font:inherit;font-size:12px;cursor:pointer}
+  .wrap{max-width:720px;margin:0 auto;padding:18px 16px 40px}
+  .card{background:var(--card);border:1px solid var(--borda);border-radius:18px;padding:18px}
+  h2{margin:0 0 10px;font-size:20px}
+  input,select,textarea{font:inherit;font-size:16px;padding:12px 13px;border:1.5px solid var(--borda);border-radius:12px;background:#FFFCF8;width:100%;outline:none}
+  input:focus,textarea:focus{border-color:var(--laranja)}
+  .btn{border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:700;font-size:15px;cursor:pointer;background:var(--escuro);color:#fff}
+  .btn-lar{background:var(--laranja)}
+  .btn-sec{background:#fff;color:var(--escuro);border:1.5px solid var(--borda)}
+  .hide{display:none!important}
+  .tabs{display:flex;gap:6px;margin-bottom:14px}
+  .tabs button{flex:1;padding:11px;border-radius:12px;border:1.5px solid var(--borda);background:#fff;font:inherit;font-weight:700;cursor:pointer}
+  .tabs button.on{background:var(--escuro);color:#fff;border-color:var(--escuro)}
+  /* login */
+  #login{max-width:340px;margin:60px auto 0;text-align:center}
+  #login img{width:200px;margin-bottom:20px}
+  #pin{text-align:center;font-size:28px;letter-spacing:10px}
+  /* leitor */
+  #reader{width:100%;border-radius:14px;overflow:hidden;background:#000}
+  #reader video{border-radius:14px}
+  .linha{display:flex;gap:8px;margin-top:12px}
+  .linha input{flex:1;text-transform:uppercase;letter-spacing:2px}
+  .dica{font-size:13px;color:var(--sub);margin-top:10px;line-height:1.45}
+  /* resultado */
+  #res{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;z-index:50}
+  #res .ic{font-size:96px;line-height:1}
+  #res h1{font-size:34px;margin:14px 0 6px}
+  #res p{font-size:18px;margin:4px 0;opacity:.95;max-width:520px;line-height:1.4}
+  #res .btn{margin-top:28px;background:#fff;color:var(--escuro);font-size:18px;padding:16px 28px}
+  .r-ok{background:var(--verde)} .r-usado{background:var(--erro)} .r-outro{background:#4A4A4A}
+  /* painel */
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+  .kpi{background:#fff;border:1px solid var(--borda);border-radius:14px;padding:12px}
+  .kpi b{display:block;font-size:26px}
+  .kpi span{font-size:12px;color:var(--sub)}
+  .camp{border:1px solid var(--borda);border-radius:14px;padding:14px;margin-top:10px;background:#FFFCF8}
+  .camp-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+  .camp small{color:var(--sub)}
+  .pill{font-size:11px;font-weight:800;padding:4px 8px;border-radius:99px;white-space:nowrap}
+  .p-on{background:#E8F5E9;color:var(--verde)} .p-off{background:#EEE;color:#666}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  label{display:block;font-size:12px;font-weight:700;margin:10px 0 4px;color:var(--sub)}
+  .tabela{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+  .tabela th,.tabela td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--borda);vertical-align:top}
+  .tabela th{font-size:11px;text-transform:uppercase;color:var(--sub)}
+  .scroll{overflow-x:auto}
+  .msg{margin-top:10px;font-size:14px;color:var(--erro)}
+  @media (max-width:520px){.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:1fr 1fr 1fr}.kpi b{font-size:20px}}
+</style>
+</head>
+<body>
+
+<!-- ===== Login ===== -->
+<div id="login" class="wrap">
+  <img src="logo.png" alt="All Natural">
+  <div class="card">
+    <h2>Leitor de cupons VIP</h2>
+    <input id="pin" type="password" inputmode="numeric" maxlength="12" placeholder="PIN" autocomplete="off">
+    <button class="btn btn-lar" style="width:100%;margin-top:12px" id="btn-login">Entrar</button>
+    <div class="msg" id="msg-login"></div>
+  </div>
+</div>
+
+<!-- ===== App ===== -->
+<div id="app" class="hide">
+  <header>
+    <img src="logo-branco.png" alt="All Natural">
+    <div class="uni"><span id="h-uni"></span><button id="btn-sair">Sair</button></div>
+  </header>
+  <div class="wrap">
+    <div class="tabs hide" id="tabs">
+      <button class="on" data-tab="leitor">📷 Ler cupom</button>
+      <button data-tab="painel">📊 Painel VIP</button>
+    </div>
+
+    <section id="tab-leitor">
+      <div class="card">
+        <div id="reader"></div>
+        <button class="btn btn-lar hide" style="width:100%;margin-top:10px" id="btn-camera">📷 Ligar câmera</button>
+        <form class="linha" id="form-manual">
+          <input id="manual" placeholder="Código ou leitor USB" autocomplete="off" autocapitalize="characters">
+          <button class="btn" type="submit">Validar</button>
+        </form>
+        <p class="dica">Aponte a câmera para o QR do cliente. Se usar leitor de código (USB/Bluetooth), deixe o cursor no campo acima — ele lê e valida sozinho. O cupom é <b>invalidado na hora</b>: só a primeira leitura vale.</p>
+      </div>
+    </section>
+
+    <section id="tab-painel" class="hide">
+      <div class="kpis">
+        <div class="kpi"><b id="k-membros">—</b><span>Membros VIP</span></div>
+        <div class="kpi"><b id="k-emitidos">—</b><span>Cupons emitidos*</span></div>
+        <div class="kpi"><b id="k-usados">—</b><span>Cupons usados*</span></div>
+      </div>
+      <p class="dica" style="margin-top:-6px">* da campanha ativa</p>
+
+      <div class="card">
+        <div class="camp-top"><h2>Campanhas</h2><button class="btn btn-sec" id="btn-nova">+ Nova</button></div>
+        <div id="lista-camp"></div>
+        <form id="form-camp" class="camp hide">
+          <input type="hidden" id="c-id">
+          <label>Título da oferta</label><input id="c-titulo" placeholder="Compre 1, ganhe outra" required>
+          <label>Produto</label><input id="c-produto" placeholder="Salada Pallhia Julienne" required>
+          <label>Descrição (opcional)</label><input id="c-desc">
+          <div class="grid2">
+            <div><label>Quantidade de cupons</label><input id="c-limite" type="number" min="0" required></div>
+            <div><label>Válido até</label><input id="c-validade" type="date" required></div>
+          </div>
+          <label style="display:flex;gap:8px;align-items:center;font-size:14px;color:var(--escuro)"><input id="c-ativa" type="checkbox" style="width:18px;height:18px"> Campanha ativa (aparece na página; desativa as outras)</label>
+          <div class="linha"><button class="btn btn-lar" type="submit">Salvar</button><button class="btn btn-sec" type="button" id="btn-cancelar">Cancelar</button></div>
+          <div class="msg" id="msg-camp"></div>
+        </form>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <div class="camp-top"><h2>Membros VIP</h2><button class="btn btn-sec" id="btn-csv">⬇ Exportar CSV</button></div>
+        <input id="busca" placeholder="Buscar nome, e-mail, telefone ou código">
+        <div class="scroll"><table class="tabela"><thead><tr><th>Nome</th><th>Contato</th><th>Cupons</th></tr></thead><tbody id="tb-membros"></tbody></table></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ===== Resultado da leitura ===== -->
+<div id="res" class="hide">
+  <div class="ic" id="res-ic"></div>
+  <h1 id="res-t"></h1>
+  <p id="res-p1"></p>
+  <p id="res-p2"></p>
+  <button class="btn" id="btn-proximo">Ler próximo</button>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://nhuotdwfzowydrjeyttc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5odW90ZHdmem93eWRyamV5dHRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTM2NDAsImV4cCI6MjA5NTk4OTY0MH0.JovSWvkJ5OdX1tauz7sYOuyDIm1Mbcx5gJF8Zb20oe4';
+const LS_PIN = 'an_vip_loja_pin';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fmtData = iso => iso ? iso.split('-').reverse().join('/') : '';
+const fmtDH = ts => ts ? new Date(ts).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '';
+const fmtTel = t => t?.length === 11 ? `(${t.slice(0,2)}) ${t.slice(2,7)}-${t.slice(7)}` : t?.length === 10 ? `(${t.slice(0,2)}) ${t.slice(2,6)}-${t.slice(6)}` : t;
+const lsGet = k => { try { return localStorage.getItem(k); } catch { return null; } };
+const lsSet = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch {} };
+
+async function rpc(fn, args = {}) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(args)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+let PIN = null, DONO = false, scanner = null, ocupado = false, dadosAdmin = null;
+
+// ---------- login ----------
+async function entrar(pin, silencioso) {
+  try {
+    const r = await rpc('vip_loja_login', { p_pin: pin });
+    if (!r.ok) { lsSet(LS_PIN, null); if (!silencioso) $('msg-login').textContent = 'PIN inválido.'; return; }
+    PIN = pin; DONO = r.dono; lsSet(LS_PIN, pin);
+    $('login').classList.add('hide'); $('app').classList.remove('hide');
+    $('h-uni').textContent = r.dono ? '👑 Dono' : `📍 ${r.unidade}`;
+    if (DONO) $('tabs').classList.remove('hide');
+    iniciarCamera();
+    $('manual').focus();
+  } catch { $('msg-login').textContent = 'Sem conexão. Tente de novo.'; }
+}
+$('btn-login').onclick = () => entrar($('pin').value.trim());
+$('pin').addEventListener('keydown', e => { if (e.key === 'Enter') entrar($('pin').value.trim()); });
+$('btn-sair').onclick = () => { lsSet(LS_PIN, null); location.reload(); };
+
+// ---------- abas ----------
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b));
+  const painel = b.dataset.tab === 'painel';
+  $('tab-leitor').classList.toggle('hide', painel);
+  $('tab-painel').classList.toggle('hide', !painel);
+  if (painel) { pararCamera(); carregarPainel(); } else iniciarCamera();
+});
+
+// ---------- leitor ----------
+function extrairToken(txt) {
+  txt = String(txt || '').trim();
+  try { const u = new URL(txt); if (u.searchParams.get('c')) txt = u.searchParams.get('c'); } catch {}
+  return txt.toUpperCase().replace(/[^A-Z0-9]/g, '');
+}
+
+async function iniciarCamera() {
+  if (scanner || !window.Html5Qrcode) return;
+  try {
+    scanner = new Html5Qrcode('reader', { formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE] });
+    await scanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: (w, h) => { const s = Math.min(w, h) * 0.7; return { width: s, height: s }; } },
+      txt => validar(txt), () => {});
+    $('btn-camera').classList.add('hide');
+  } catch {
+    scanner = null;
+    $('btn-camera').classList.remove('hide');   // sem permissão/câmera: segue pelo campo manual / leitor USB
+  }
+}
+async function pararCamera() { if (scanner) { try { await scanner.stop(); } catch {} scanner = null; } }
+$('btn-camera').onclick = iniciarCamera;
+
+$('form-manual').addEventListener('submit', e => { e.preventDefault(); validar($('manual').value); });
+
+function bip(ok) {
+  try {
+    const a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain();
+    o.frequency.value = ok ? 880 : 220; o.connect(g); g.connect(a.destination); g.gain.value = .15;
+    o.start(); o.stop(a.currentTime + (ok ? .18 : .5));
+  } catch {}
+  if (navigator.vibrate) navigator.vibrate(ok ? 120 : [200, 100, 200]);
+}
+
+async function validar(txt) {
+  if (ocupado) return;
+  const token = extrairToken(txt);
+  if (token.length < 6) return;
+  ocupado = true;
+  if (scanner) { try { scanner.pause(true); } catch {} }
+  let r;
+  try { r = await rpc('vip_resgatar', { p_token: token, p_pin: PIN }); }
+  catch { r = { status: 'rede' }; }
+  mostrarResultado(r);
+}
+
+function mostrarResultado(r) {
+  const res = $('res'), set = (cls, ic, t, p1, p2) => {
+    res.className = cls; $('res-ic').textContent = ic; $('res-t').textContent = t;
+    $('res-p1').textContent = p1 || ''; $('res-p2').textContent = p2 || '';
+  };
+  if (r.status === 'ok') { set('r-ok', '✅', 'Cupom válido!', r.nome, `${r.titulo} — ${r.produto}`); bip(true); }
+  else if (r.status === 'usado') { set('r-usado', '⛔', 'Cupom JÁ UTILIZADO', r.nome, `Usado em ${fmtDH(r.usado_em)} · ${r.usado_unidade}`); bip(false); }
+  else if (r.status === 'expirado') { set('r-outro', '⌛', 'Cupom expirado', r.nome, `Validade: ${fmtData(r.validade)}`); bip(false); }
+  else if (r.status === 'invalido') { set('r-usado', '❌', 'Código não encontrado', 'Este QR não é um cupom VIP válido.'); bip(false); }
+  else if (r.status === 'pin') { lsSet(LS_PIN, null); location.reload(); return; }
+  else { set('r-outro', '📶', 'Sem conexão', 'Não foi possível validar. Tente de novo.'); bip(false); }
+  $('manual').value = '';
+  $('manual').blur();
+  clearTimeout(timerRes);
+  timerRes = setTimeout(proximo, 5000);
+}
+
+let timerRes = null;
+function proximo() {
+  clearTimeout(timerRes);
+  $('res').className = 'hide';
+  ocupado = false;
+  if (scanner) { try { scanner.resume(); } catch {} }
+  $('manual').focus();
+}
+$('btn-proximo').onclick = proximo;
+// leitor USB começando a "digitar" o próximo código com o resultado ainda na tela
+document.addEventListener('keydown', e => {
+  if ($('res').className !== 'hide' && e.key.length === 1) proximo();
+}, true);
+
+// ---------- painel do dono ----------
+async function carregarPainel() {
+  const r = await rpc('vip_admin', { p_pin: PIN });
+  if (!r.ok) return;
+  dadosAdmin = r;
+  const ativa = r.campanhas.find(c => c.vigente);
+  $('k-membros').textContent = r.membros.length;
+  $('k-emitidos').textContent = ativa ? `${ativa.emitidos}/${ativa.limite}` : '—';
+  $('k-usados').textContent = ativa ? ativa.usados : '—';
+  $('lista-camp').innerHTML = r.campanhas.map(c => `
+    <div class="camp">
+      <div class="camp-top">
+        <div><b>${esc(c.titulo)} — ${esc(c.produto)}</b><br>
+          <small>${c.emitidos}/${c.limite} cupons · ${c.usados} usados · válido até ${fmtData(c.validade)}</small></div>
+        <span class="pill ${c.vigente ? 'p-on' : 'p-off'}">${c.vigente ? 'ATIVA' : c.ativa ? 'VENCIDA' : 'INATIVA'}</span>
+      </div>
+      <button class="btn btn-sec" style="margin-top:10px;padding:8px 12px;font-size:13px" data-edit="${c.id}">Editar</button>
+    </div>`).join('') || '<p class="dica">Nenhuma campanha ainda.</p>';
+  document.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => abrirForm(r.campanhas.find(c => c.id == b.dataset.edit)));
+  renderMembros();
+}
+
+function abrirForm(c) {
+  $('form-camp').classList.remove('hide');
+  $('c-id').value = c?.id ?? '';
+  $('c-titulo').value = c?.titulo ?? '';
+  $('c-produto').value = c?.produto ?? '';
+  $('c-desc').value = c?.descricao ?? '';
+  $('c-limite').value = c?.limite ?? 100;
+  $('c-validade').value = c?.validade ?? '';
+  $('c-ativa').checked = c ? c.ativa : true;
+  $('msg-camp').textContent = '';
+  $('form-camp').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+$('btn-nova').onclick = () => abrirForm(null);
+$('btn-cancelar').onclick = () => $('form-camp').classList.add('hide');
+$('form-camp').addEventListener('submit', async e => {
+  e.preventDefault();
+  const r = await rpc('vip_salvar_campanha', {
+    p_pin: PIN, p_id: $('c-id').value ? Number($('c-id').value) : null,
+    p_titulo: $('c-titulo').value, p_produto: $('c-produto').value, p_descricao: $('c-desc').value,
+    p_limite: Number($('c-limite').value), p_validade: $('c-validade').value || null, p_ativa: $('c-ativa').checked
+  }).catch(() => ({ ok: false, msg: 'Sem conexão.' }));
+  if (!r.ok) { $('msg-camp').textContent = r.msg || 'Erro ao salvar.'; return; }
+  $('form-camp').classList.add('hide');
+  carregarPainel();
+});
+
+function renderMembros() {
+  if (!dadosAdmin) return;
+  const limpa = s => s.toLowerCase().replace(/[-\s()]/g, '');
+  const q = limpa($('busca').value);
+  const camps = Object.fromEntries(dadosAdmin.campanhas.map(c => [c.id, c.produto]));
+  const lista = dadosAdmin.membros.filter(m => !q ||
+    limpa([m.nome, m.email, m.telefone, ...m.cupons.map(k => k.token)].join(' ')).includes(q));
+  $('tb-membros').innerHTML = lista.slice(0, 300).map(m => `
+    <tr><td><b>${esc(m.nome)}</b><br><small>${fmtDH(m.criado_em)}</small></td>
+    <td>${esc(m.email)}<br>${esc(fmtTel(m.telefone))}</td>
+    <td>${m.cupons.map(k => `${esc(camps[k.campanha_id] || '')}: <code>${k.token}</code> ${k.usado_em ? `✅ ${esc(k.usado_unidade)} ${fmtDH(k.usado_em)}` : '⏳'}`).join('<br>') || '—'}</td></tr>`).join('');
+}
+$('busca').addEventListener('input', renderMembros);
+
+$('btn-csv').onclick = () => {
+  if (!dadosAdmin) return;
+  const camps = Object.fromEntries(dadosAdmin.campanhas.map(c => [c.id, `${c.titulo} - ${c.produto}`]));
+  const linhas = [['nome', 'email', 'telefone', 'cadastro', 'campanha', 'codigo', 'usado_em', 'loja']];
+  for (const m of dadosAdmin.membros) {
+    const base = [m.nome, m.email, m.telefone, fmtDH(m.criado_em)];
+    if (!m.cupons.length) linhas.push([...base, '', '', '', '']);
+    for (const k of m.cupons) linhas.push([...base, camps[k.campanha_id] || '', k.token, fmtDH(k.usado_em), k.usado_unidade || '']);
+  }
+  const csv = '﻿' + linhas.map(l => l.map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+  a.download = `lista-vip-allnatural-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+};
+
+// ---------- init ----------
+const salvo = lsGet(LS_PIN);
+if (salvo) entrar(salvo, true); else $('pin').focus();
+</script>
+</body>
+</html>
