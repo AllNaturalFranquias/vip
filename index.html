@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lista VIP · All Natural</title>
+<meta name="description" content="Seja parte do grupo exclusivo do All Natural: super promoções, lançamentos e novidades em primeira mão.">
+<meta property="og:title" content="Lista VIP All Natural 🥕">
+<meta property="og:description" content="Seja parte do grupo exclusivo: super promos, lançamentos em primeira mão e presentes para os primeiros VIPs.">
+<meta property="og:image" content="https://allnaturalfranquias.github.io/vip/logo.png">
+<meta name="theme-color" content="#F7941D">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --laranja:#F7941D; --laranja-esc:#D97A08; --escuro:#1C1C1C; --fundo:#FFF8F0;
+    --card:#FFFFFF; --texto:#1C1C1C; --sub:#6B5E52; --borda:#EADBC8; --verde:#2E7D32; --erro:#B42318;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--fundo);color:var(--texto);font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+  .wrap{max-width:460px;margin:0 auto;padding:22px 16px 40px}
+  .logo{display:block;width:190px;height:auto;margin:4px auto 0}
+  h1,h2{font-family:Fraunces,Georgia,serif;letter-spacing:-.5px;margin:0}
+  .hero{margin-top:26px;text-align:center}
+  .tag{display:inline-block;background:var(--escuro);color:#fff;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;padding:7px 12px;border-radius:999px}
+  .hero h1{font-size:36px;line-height:1.06;margin-top:14px}
+  .hero h1 em{font-style:normal;color:var(--laranja)}
+  .hero p{color:var(--sub);font-size:16px;line-height:1.5;margin:12px auto 0;max-width:360px}
+  .beneficios{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+  .benef{background:var(--card);border:1px solid var(--borda);border-radius:16px;padding:14px}
+  .benef i{font-style:normal;font-size:24px;display:block}
+  .benef b{display:block;font-size:14px;margin-top:8px}
+  .benef span{display:block;font-size:12.5px;color:var(--sub);line-height:1.4;margin-top:3px}
+  .promo{margin-top:22px;background:var(--laranja);color:#fff;border-radius:20px;padding:20px;position:relative;overflow:hidden}
+  .promo small{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;opacity:.92}
+  .promo .t{font-size:15px;font-weight:600;margin-top:10px}
+  .promo b{display:block;font-family:Fraunces,Georgia,serif;font-size:27px;line-height:1.1;margin-top:4px}
+  .promo .x{position:absolute;right:-6px;bottom:-22px;font-size:96px;opacity:.22;transform:rotate(-12deg)}
+  form{margin-top:18px;background:var(--card);border:1px solid var(--borda);border-radius:20px;padding:20px}
+  form h2{font-size:22px;margin-bottom:4px}
+  label{display:block;font-size:13px;font-weight:600;margin:14px 0 6px}
+  input[type=text],input[type=email],input[type=tel]{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:1.5px solid var(--borda);border-radius:12px;background:#FFFCF8;color:var(--texto);outline:none}
+  input:focus{border-color:var(--laranja);box-shadow:0 0 0 3px #F7941D33}
+  .aceite{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--sub);line-height:1.45;margin-top:16px;font-weight:400}
+  .aceite input{width:20px;height:20px;accent-color:var(--laranja);flex:none;margin-top:1px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:14px;padding:15px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;text-decoration:none;margin-top:18px}
+  .btn-pri{background:var(--escuro);color:#fff}
+  .btn-pri:disabled{opacity:.55;cursor:wait}
+  .btn-sec{background:var(--card);color:var(--escuro);border:1.5px solid var(--borda);margin-top:10px}
+  .btn-wa{background:#25D366;color:#fff;margin-top:10px}
+  .msg{margin-top:12px;font-size:14px;line-height:1.45;border-radius:12px;padding:12px 14px;display:none}
+  .msg.erro{display:block;background:#FDECEA;color:var(--erro)}
+  .msg.info{display:block;background:#FFF1DE;color:#7A4A06}
+  .regras{font-size:12px;color:var(--sub);line-height:1.55;margin-top:18px;padding:0 4px}
+  /* cupom */
+  .cupom{margin-top:22px;background:var(--card);border-radius:24px;overflow:hidden;border:1px solid var(--borda);box-shadow:0 10px 30px #7A4A0614}
+  .cupom-top{background:var(--laranja);color:#fff;padding:18px 20px;text-align:center}
+  .cupom-top small{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+  .cupom-top b{display:block;font-family:Fraunces,Georgia,serif;font-size:24px;margin-top:4px}
+  .cupom-corpo{padding:22px 20px;text-align:center;position:relative}
+  .cupom-corpo::before,.cupom-corpo::after{content:"";position:absolute;top:-12px;width:24px;height:24px;border-radius:50%;background:var(--fundo)}
+  .cupom-corpo::before{left:-12px}.cupom-corpo::after{right:-12px}
+  #qr{display:inline-block;padding:10px;background:#fff;border-radius:12px}
+  #qr img,#qr canvas{display:block;width:220px;height:220px}
+  #modal-img{position:fixed;inset:0;background:#1C1C1CE6;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;color:#fff;text-align:center}
+  #modal-img img{max-width:100%;max-height:72vh;border-radius:16px}
+  #modal-img p{margin:0;font-size:15px;font-weight:600}
+  #modal-img button{background:#fff;color:#1C1C1C;border:0;border-radius:12px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer}
+  .codigo{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:22px;letter-spacing:4px;font-weight:700;margin-top:10px}
+  .status{display:inline-block;margin-top:12px;font-size:13px;font-weight:700;padding:6px 12px;border-radius:999px}
+  .st-valido{background:#E8F5E9;color:var(--verde)}
+  .st-usado{background:#FDECEA;color:var(--erro)}
+  .st-expirado{background:#EEE;color:#555}
+  .usado #qr{opacity:.15;filter:grayscale(1)}
+  .cupom-info{font-size:13px;color:var(--sub);line-height:1.5;margin-top:14px}
+  .ok-titulo{text-align:center;margin-top:24px}
+  .ok-titulo h2{font-size:28px}
+  .ok-titulo p{color:var(--sub);margin:8px 0 0;line-height:1.5}
+  .meu-cupom{display:none;margin-top:16px;background:#FFF1DE;border-radius:14px;padding:12px 14px;font-size:14px;color:#7A4A06}
+  .meu-cupom a{color:var(--laranja-esc);font-weight:700}
+  .hide{display:none!important}
+  footer{text-align:center;font-size:12px;color:var(--sub);margin-top:28px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="logo.png" alt="All Natural — Comida deliciosa e saudável">
+
+  <!-- ===== Tela de cadastro ===== -->
+  <section id="tela-cadastro">
+    <div class="hero">
+      <span class="tag">⭐ Lista VIP</span>
+      <h1>Seja parte do grupo <em>exclusivo</em> do All Natural</h1>
+      <p>Quem é VIP fica sabendo de tudo antes — e ganha vantagens que não aparecem em nenhum outro lugar.</p>
+    </div>
+
+    <div id="bloco-campanha" class="hide">
+      <div class="promo">
+        <small id="promo-chamada">Presente para os 100 primeiros</small>
+        <div class="t" id="promo-titulo">Compre 1, ganhe outra</div>
+        <b id="promo-produto">Salada Pallhia Julienne</b>
+        <div class="x">🥗</div>
+      </div>
+    </div>
+
+    <div class="beneficios">
+      <div class="benef"><i>🔥</i><b>Super promos</b><span>Ofertas só para quem está na lista</span></div>
+      <div class="benef"><i>🥗</i><b>Lançamentos</b><span>Pratos novos em primeira mão</span></div>
+      <div class="benef"><i>🎁</i><b>Presentes</b><span>Cupons e mimos exclusivos</span></div>
+      <div class="benef"><i>📣</i><b>Novidades</b><span>Lojas, eventos e cardápio antes de todos</span></div>
+    </div>
+
+    <div class="meu-cupom" id="aviso-meu-cupom">Você já tem um cupom neste celular. <a id="link-meu-cupom" href="#">Ver meu cupom →</a></div>
+
+    <form id="form" novalidate>
+      <h2>Quero ser VIP</h2>
+      <label for="nome">Nome completo</label>
+      <input id="nome" type="text" autocomplete="name" maxlength="80" required>
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="email" inputmode="email" maxlength="120" required>
+      <label for="tel">WhatsApp</label>
+      <input id="tel" type="tel" autocomplete="tel" inputmode="tel" placeholder="(41) 99999-9999" maxlength="16" required>
+      <label class="aceite"><input id="aceite" type="checkbox" checked> Quero receber promoções, lançamentos e novidades do All Natural por e-mail e WhatsApp.</label>
+      <button class="btn btn-pri" id="btn-enviar" type="submit">Entrar na Lista VIP</button>
+      <div class="msg" id="msg"></div>
+    </form>
+
+    <p class="regras hide" id="regras"></p>
+  </section>
+
+  <!-- ===== Tela do cupom ===== -->
+  <section id="tela-cupom" class="hide">
+    <div class="ok-titulo">
+      <h2 id="cupom-titulo">Seu cupom VIP</h2>
+      <p id="cupom-sub"></p>
+    </div>
+    <div class="cupom" id="cupom">
+      <div class="cupom-top"><small id="cupom-camp-titulo"></small><b id="cupom-camp-produto"></b></div>
+      <div class="cupom-corpo">
+        <div id="qr"></div>
+        <div class="codigo" id="codigo"></div>
+        <div class="status" id="status"></div>
+        <div class="cupom-info" id="cupom-info">Mostre este QR code no caixa. Ele vale <b>uma única vez</b> e é invalidado assim que for lido.</div>
+      </div>
+    </div>
+    <div id="acoes">
+      <button class="btn btn-pri" id="btn-salvar" type="button">⬇ Salvar imagem do cupom</button>
+      <a class="btn btn-wa" id="btn-wa" target="_blank" rel="noopener">Guardar no meu WhatsApp</a>
+      <button class="btn btn-sec" id="btn-reenviar" type="button">Reenviar por e-mail</button>
+    </div>
+    <div class="msg" id="msg-cupom"></div>
+  </section>
+
+  <!-- ===== Tela lista (sem cupom) ===== -->
+  <section id="tela-lista" class="hide">
+    <div class="ok-titulo" style="margin-top:36px">
+      <p style="font-size:48px;margin:0">🎉</p>
+      <h2>Você agora é VIP!</h2>
+      <p>Bem-vindo(a) ao grupo exclusivo do All Natural. Você vai receber nossas super promos, lançamentos e novidades antes de todo mundo.</p>
+    </div>
+  </section>
+
+  <div id="modal-img" class="hide">
+    <img id="img-cupom" alt="Cupom VIP">
+    <p>Pressione e segure a imagem para salvar na galeria 📲</p>
+    <button type="button" onclick="document.getElementById('modal-img').classList.add('hide')">Fechar</button>
+  </div>
+
+  <footer>All Natural · Comida deliciosa e saudável</footer>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://nhuotdwfzowydrjeyttc.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5odW90ZHdmem93eWRyamV5dHRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MTM2NDAsImV4cCI6MjA5NTk4OTY0MH0.JovSWvkJ5OdX1tauz7sYOuyDIm1Mbcx5gJF8Zb20oe4';
+const LS_KEY = 'an_vip_token';
+const $ = id => document.getElementById(id);
+
+async function rpc(fn, args = {}) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(args)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+function enviarEmail(body) {
+  return fetch(`${SUPABASE_URL}/functions/v1/vip-email`, {
+    method: 'POST',
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(r => r.json()).catch(() => ({ ok: false }));
+}
+const lsGet = () => { try { return localStorage.getItem(LS_KEY); } catch { return null; } };
+const lsSet = v => { try { localStorage.setItem(LS_KEY, v); } catch {} };
+const fmtData = iso => iso ? iso.split('-').reverse().join('/') : '';
+const fmtCodigo = t => `${t.slice(0, 4)}-${t.slice(4)}`;
+const linkCupom = t => `${location.origin}${location.pathname}?c=${t}`;
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function msg(el, tipo, html) { el.className = 'msg ' + tipo; el.innerHTML = html; }
+
+// máscara de telefone
+$('tel').addEventListener('input', e => {
+  let d = e.target.value.replace(/\D/g, '').slice(0, 11);
+  if (d.length > 6) d = `(${d.slice(0,2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
+  else if (d.length > 2) d = `(${d.slice(0,2)}) ${d.slice(2)}`;
+  e.target.value = d;
+});
+
+async function carregarStatus() {
+  try {
+    const { campanha: c } = await rpc('vip_status');
+    if (!c) return;
+    $('bloco-campanha').classList.remove('hide');
+    $('promo-chamada').textContent = `Presente para os ${c.limite} primeiros`;
+    $('promo-titulo').textContent = c.titulo;
+    $('promo-produto').textContent = c.produto;
+    $('regras').classList.remove('hide');
+    $('regras').textContent = `${c.titulo} — ${c.produto}: cupom pessoal e intransferível, válido uma única vez em qualquer loja All Natural até ${fmtData(c.validade)}, mediante leitura do QR code no caixa. Limitado aos ${c.limite} primeiros cadastros, um por pessoa (e-mail e telefone).`;
+    if (c.tem_cupons) $('btn-enviar').textContent = 'Quero ser VIP e ganhar meu cupom';
+    else $('promo-chamada').textContent = 'Cupons esgotados — a Lista VIP continua aberta';
+  } catch { /* sem campanha visível: a página segue funcionando só como cadastro VIP */ }
+}
+
+// ---------- checagem de e-mail ----------
+const DOMINIOS = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com.br', 'yahoo.com', 'icloud.com', 'live.com',
+  'hotmail.com.br', 'outlook.com.br', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'msn.com', 'me.com'];
+function distancia(a, b) {
+  const d = Array.from({ length: a.length + 1 }, (_, i) => [i, ...Array(b.length).fill(0)]);
+  for (let j = 1; j <= b.length; j++) d[0][j] = j;
+  for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++)
+    d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+  return d[a.length][b.length];
+}
+function sugerirDominio(dom) {
+  if (DOMINIOS.includes(dom)) return null;
+  let melhor = null, menor = 3;
+  for (const d of DOMINIOS) { const x = distancia(dom, d); if (x < menor) { menor = x; melhor = d; } }
+  return melhor;
+}
+// o domínio existe e recebe e-mail? (DNS público do Google; se falhar, não bloqueia)
+async function dominioRecebeEmail(dom) {
+  if (DOMINIOS.includes(dom)) return true;
+  const q = async type => {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 3500);
+    return (await fetch(`https://dns.google/resolve?name=${encodeURIComponent(dom)}&type=${type}`, { signal: ctl.signal })).json();
+  };
+  try {
+    const mx = await q('MX');
+    if (mx.Status === 3) return false;                       // domínio não existe
+    if ((mx.Answer || []).some(a => a.type === 15)) return true;
+    const a = await q('A');                                   // sem MX: aceita se ao menos o domínio resolve
+    return (a.Answer || []).length > 0;
+  } catch { return true; }
+}
+let sugestaoIgnorada = '';
+
+$('form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const nome = $('nome').value.trim(), email = $('email').value.trim().toLowerCase(), tel = $('tel').value;
+  const dig = tel.replace(/\D/g, '');
+  const m = $('msg');
+  if (nome.split(' ').filter(Boolean).length < 2) return msg(m, 'erro', 'Informe nome e sobrenome.');
+  if (!/^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(email)) return msg(m, 'erro', 'Confira seu e-mail.');
+  if (dig.length !== 11 || dig[2] !== '9') return msg(m, 'erro', 'Informe seu celular com DDD, ex.: (41) 99999-9999.');
+  if (!$('aceite').checked) return msg(m, 'erro', 'Marque a opção para entrar na Lista VIP.');
+
+  const [usuario, dom] = email.split('@');
+  const sug = sugerirDominio(dom);
+  if (sug && sugestaoIgnorada !== email) {
+    sugestaoIgnorada = email;
+    msg(m, 'info', `Você quis dizer <b>${esc(usuario)}@${sug}</b>? <a href="#" id="usar-sug" style="color:#D97A08;font-weight:700">Corrigir</a> · ou toque no botão de novo se o seu está certo.`);
+    $('usar-sug').onclick = ev => { ev.preventDefault(); $('email').value = `${usuario}@${sug}`; $('form').requestSubmit(); };
+    return;
+  }
+
+  const btn = $('btn-enviar'), txtBtn = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Um instante…';
+  if (!(await dominioRecebeEmail(dom))) {
+    btn.disabled = false; btn.textContent = txtBtn;
+    return msg(m, 'erro', `O endereço <b>@${esc(dom)}</b> não existe. Confira seu e-mail.`);
+  }
+  try {
+    const r = await rpc('vip_cadastrar', { p_nome: nome, p_email: email, p_telefone: tel, p_aceite: true });
+    if (r.status === 'ok') {
+      lsSet(r.token);
+      enviarEmail({ token: r.token });
+      history.replaceState(null, '', `?c=${r.token}`);
+      mostrarCupom(r.token, { novo: true, validade: r.validade,
+        titulo: r.titulo, produto: r.produto, nome: nome.split(' ')[0], status: 'valido', email });
+    } else if (r.status === 'lista') {
+      enviarEmail({ email });
+      $('tela-cadastro').classList.add('hide'); $('tela-lista').classList.remove('hide');
+      window.scrollTo(0, 0);
+    } else if (r.status === 'ja_cadastrado') {
+      if (r.tem_cupom) await enviarEmail({ email, telefone: tel });
+      msg(m, 'info',
+        r.cupom_novo ? `Você já é VIP — e acabou de garantir o cupom desta campanha! Enviamos para <b>${esc(r.email_mascarado)}</b>. Confira também o spam.`
+        : r.tem_cupom ? `Você já é VIP! Reenviamos seu cupom para <b>${esc(r.email_mascarado)}</b>. Confira também o spam.`
+        : `Você já faz parte da Lista VIP (e-mail <b>${esc(r.email_mascarado)}</b>). Fique de olho nas novidades!`);
+    } else {
+      msg(m, 'erro', esc(r.msg || 'Não foi possível concluir. Tente de novo.'));
+    }
+  } catch {
+    msg(m, 'erro', 'Falha de conexão. Verifique sua internet e tente de novo.');
+  } finally {
+    btn.disabled = false; btn.textContent = txtBtn;
+  }
+});
+
+async function mostrarCupom(token, dados) {
+  $('tela-cadastro').classList.add('hide');
+  $('tela-cupom').classList.remove('hide');
+  window.scrollTo(0, 0);
+  $('qr').innerHTML = '';
+  new QRCode($('qr'), { text: linkCupom(token), width: 440, height: 440, correctLevel: QRCode.CorrectLevel.M });
+  $('codigo').textContent = fmtCodigo(token);
+
+  if (!dados) {
+    try { dados = await rpc('vip_cupom', { p_token: token }); }
+    catch { dados = { status: 'valido' }; }
+  }
+  if (dados.status === 'invalido') {
+    $('tela-cupom').classList.add('hide'); $('tela-cadastro').classList.remove('hide');
+    carregarStatus();
+    return msg($('msg'), 'erro', 'Cupom não encontrado.');
+  }
+  $('cupom-camp-titulo').textContent = dados.titulo || '';
+  $('cupom-camp-produto').textContent = dados.produto || '';
+  const st = $('status'), val = fmtData(dados.validade);
+  if (dados.status === 'usado') {
+    st.className = 'status st-usado'; st.textContent = 'Cupom já utilizado';
+    $('cupom').classList.add('usado'); $('acoes').classList.add('hide');
+    $('cupom-info').textContent = 'Obrigado por aproveitar! Você continua VIP e vai receber as próximas promoções.';
+  } else if (dados.status === 'expirado') {
+    st.className = 'status st-expirado'; st.textContent = 'Cupom expirado';
+    $('cupom').classList.add('usado'); $('acoes').classList.add('hide');
+  } else {
+    st.className = 'status st-valido'; st.textContent = `Válido até ${val}`;
+  }
+  $('cupom-titulo').textContent = dados.nome ? `${dados.nome}, você é VIP!` : 'Seu cupom VIP';
+  $('cupom-sub').innerHTML = dados.novo
+    ? `Você garantiu seu cupom exclusivo. Enviamos uma cópia para <b>${esc(dados.email)}</b>.`
+    : 'Apresente no caixa de qualquer loja All Natural.';
+
+  const textoWa = `🥕 Meu cupom VIP All Natural — ${dados.titulo}: ${dados.produto} (válido até ${val}): ${linkCupom(token)}`;
+  $('btn-wa').href = `https://wa.me/?text=${encodeURIComponent(textoWa)}`;
+  $('btn-reenviar').onclick = async () => {
+    $('btn-reenviar').disabled = true;
+    const r = await enviarEmail({ token });
+    msg($('msg-cupom'), r.ok ? 'info' : 'erro', r.ok ? 'Pronto! Confira seu e-mail (e a caixa de spam).' : 'Não conseguimos enviar agora. Salve a imagem do cupom.');
+    setTimeout(() => $('btn-reenviar').disabled = false, 30000);
+  };
+  $('btn-salvar').onclick = () => salvarImagem(token, val, dados);
+}
+
+// gera um PNG do cupom (para a galeria do celular)
+function salvarImagem(token, val, dados) {
+  const qrCanvas = $('qr').querySelector('canvas');
+  const W = 720, H = 1080, c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d');
+  g.fillStyle = '#FFF8F0'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#F7941D'; g.fillRect(0, 0, W, 260);
+  g.fillStyle = '#fff'; g.textAlign = 'center';
+  g.font = '700 26px Inter, sans-serif'; g.fillText('ALL NATURAL · LISTA VIP', W / 2, 70);
+  g.font = '800 46px Fraunces, Georgia, serif'; g.fillText(dados.titulo || '', W / 2, 150);
+  g.font = '600 34px Inter, sans-serif'; g.fillText(dados.produto || '', W / 2, 205);
+  g.fillStyle = '#fff'; g.fillRect(140, 320, 440, 440);
+  if (qrCanvas) g.drawImage(qrCanvas, 160, 340, 400, 400);
+  g.fillStyle = '#1C1C1C'; g.font = '700 44px ui-monospace, Consolas, monospace';
+  g.fillText(fmtCodigo(token), W / 2, 830);
+  g.fillStyle = '#6B5E52'; g.font = '400 26px Inter, sans-serif';
+  g.fillText(`Válido até ${val} · uso único`, W / 2, 890);
+  g.fillText('Mostre este QR code no caixa', W / 2, 935);
+  const url = c.toDataURL('image/png');
+  // navegador do Instagram/Facebook bloqueia download: mostra a imagem para "pressionar e segurar"
+  $('img-cupom').src = url;
+  $('modal-img').classList.remove('hide');
+  if (!/Instagram|FBAN|FBAV/i.test(navigator.userAgent)) {
+    const a = document.createElement('a');
+    a.download = `cupom-vip-allnatural-${token}.png`;
+    a.href = url;
+    a.click();
+  }
+}
+
+// ---------- init ----------
+const params = new URLSearchParams(location.search);
+const tokenUrl = (params.get('c') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+if (tokenUrl) {
+  mostrarCupom(tokenUrl);
+} else {
+  carregarStatus();
+  const salvo = lsGet();
+  if (salvo) {
+    $('aviso-meu-cupom').style.display = 'block';
+    $('link-meu-cupom').href = `?c=${salvo}`;
+  }
+}
+</script>
+</body>
+</html>
