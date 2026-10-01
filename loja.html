@@ -110,13 +110,14 @@
         <div class="kpi"><b id="k-emitidos">—</b><span>Cupons emitidos*</span></div>
         <div class="kpi"><b id="k-usados">—</b><span>Cupons usados*</span></div>
       </div>
-      <p class="dica" style="margin-top:-6px">* da campanha ativa</p>
+      <p class="dica" style="margin-top:-6px">* das campanhas ativas</p>
 
       <div class="card">
         <div class="camp-top"><h2>Campanhas</h2><button class="btn btn-sec" id="btn-nova">+ Nova</button></div>
         <div id="lista-camp"></div>
         <form id="form-camp" class="camp hide">
           <input type="hidden" id="c-id">
+          <label>Cidade (o cupom só vale nas lojas dela)</label><select id="c-cidade"></select>
           <label>Título da oferta</label><input id="c-titulo" placeholder="Compre 1, ganhe outra" required>
           <label>Produto</label><input id="c-produto" placeholder="Salada Pallhia Julienne" required>
           <label>Descrição (opcional)</label><input id="c-desc">
@@ -171,6 +172,7 @@ async function rpc(fn, args = {}) {
 }
 
 let PIN = null, DONO = false, scanner = null, ocupado = false, dadosAdmin = null;
+const nomeCidade = slug => dadosAdmin?.cidades?.find(c => c.slug === slug)?.nome ?? slug ?? '';
 
 // ---------- login ----------
 async function entrar(pin, silencioso) {
@@ -179,7 +181,7 @@ async function entrar(pin, silencioso) {
     if (!r.ok) { lsSet(LS_PIN, null); if (!silencioso) $('msg-login').textContent = 'PIN inválido.'; return; }
     PIN = pin; DONO = r.dono; lsSet(LS_PIN, pin);
     $('login').classList.add('hide'); $('app').classList.remove('hide');
-    $('h-uni').textContent = r.dono ? '👑 Dono' : `📍 ${r.unidade}`;
+    $('h-uni').textContent = r.dono ? '👑 Dono' : `📍 ${r.unidade}${r.cidade && r.cidade !== r.unidade ? ` · ${r.cidade}` : ''}`;
     if (DONO) $('tabs').classList.remove('hide');
     iniciarCamera();
     $('manual').focus();
@@ -250,6 +252,7 @@ function mostrarResultado(r) {
   };
   if (r.status === 'ok') { set('r-ok', '✅', 'Cupom válido!', r.nome, `${r.titulo} — ${r.produto}`); bip(true); }
   else if (r.status === 'usado') { set('r-usado', '⛔', 'Cupom JÁ UTILIZADO', r.nome, `Usado em ${fmtDH(r.usado_em)} · ${r.usado_unidade}`); bip(false); }
+  else if (r.status === 'outra_cidade') { set('r-usado', '📍', 'Cupom de outra cidade', r.nome, `Este cupom vale só nas lojas de ${r.cidade}.`); bip(false); }
   else if (r.status === 'expirado') { set('r-outro', '⌛', 'Cupom expirado', r.nome, `Validade: ${fmtData(r.validade)}`); bip(false); }
   else if (r.status === 'invalido') { set('r-usado', '❌', 'Código não encontrado', 'Este QR não é um cupom VIP válido.'); bip(false); }
   else if (r.status === 'pin') { lsSet(LS_PIN, null); location.reload(); return; }
@@ -279,14 +282,15 @@ async function carregarPainel() {
   const r = await rpc('vip_admin', { p_pin: PIN });
   if (!r.ok) return;
   dadosAdmin = r;
-  const ativa = r.campanhas.find(c => c.vigente);
+  const vig = r.campanhas.filter(c => c.vigente), soma = k => vig.reduce((s, c) => s + c[k], 0);
   $('k-membros').textContent = r.membros.length;
-  $('k-emitidos').textContent = ativa ? `${ativa.emitidos}/${ativa.limite}` : '—';
-  $('k-usados').textContent = ativa ? ativa.usados : '—';
+  $('k-emitidos').textContent = vig.length ? `${soma('emitidos')}/${soma('limite')}` : '—';
+  $('k-usados').textContent = vig.length ? soma('usados') : '—';
+  $('c-cidade').innerHTML = r.cidades.map(ci => `<option value="${ci.slug}">${esc(ci.nome)}</option>`).join('');
   $('lista-camp').innerHTML = r.campanhas.map(c => `
     <div class="camp">
       <div class="camp-top">
-        <div><b>${esc(c.titulo)} — ${esc(c.produto)}</b><br>
+        <div><small><b>${esc(nomeCidade(c.cidade))}</b></small><br><b>${esc(c.titulo)} — ${esc(c.produto)}</b><br>
           <small>${c.emitidos}/${c.limite} cupons · ${c.usados} usados · válido até ${fmtData(c.validade)}</small></div>
         <span class="pill ${c.vigente ? 'p-on' : 'p-off'}">${c.vigente ? 'ATIVA' : c.ativa ? 'VENCIDA' : 'INATIVA'}</span>
       </div>
@@ -299,6 +303,7 @@ async function carregarPainel() {
 function abrirForm(c) {
   $('form-camp').classList.remove('hide');
   $('c-id').value = c?.id ?? '';
+  $('c-cidade').value = c?.cidade ?? 'curitiba';
   $('c-titulo').value = c?.titulo ?? '';
   $('c-produto').value = c?.produto ?? '';
   $('c-desc').value = c?.descricao ?? '';
@@ -314,7 +319,7 @@ $('form-camp').addEventListener('submit', async e => {
   e.preventDefault();
   const r = await rpc('vip_salvar_campanha', {
     p_pin: PIN, p_id: $('c-id').value ? Number($('c-id').value) : null,
-    p_titulo: $('c-titulo').value, p_produto: $('c-produto').value, p_descricao: $('c-desc').value,
+    p_cidade: $('c-cidade').value, p_titulo: $('c-titulo').value, p_produto: $('c-produto').value, p_descricao: $('c-desc').value,
     p_limite: Number($('c-limite').value), p_validade: $('c-validade').value || null, p_ativa: $('c-ativa').checked
   }).catch(() => ({ ok: false, msg: 'Sem conexão.' }));
   if (!r.ok) { $('msg-camp').textContent = r.msg || 'Erro ao salvar.'; return; }
@@ -330,7 +335,7 @@ function renderMembros() {
   const lista = dadosAdmin.membros.filter(m => !q ||
     limpa([m.nome, m.email, m.telefone, ...m.cupons.map(k => k.token)].join(' ')).includes(q));
   $('tb-membros').innerHTML = lista.slice(0, 300).map(m => `
-    <tr><td><b>${esc(m.nome)}</b><br><small>${fmtDH(m.criado_em)}</small></td>
+    <tr><td><b>${esc(m.nome)}</b><br><small>${esc(nomeCidade(m.cidade))} · ${fmtDH(m.criado_em)}</small></td>
     <td>${esc(m.email)}<br>${esc(fmtTel(m.telefone))}</td>
     <td>${m.cupons.map(k => `${esc(camps[k.campanha_id] || '')}: <code>${k.token}</code> ${k.usado_em ? `✅ ${esc(k.usado_unidade)} ${fmtDH(k.usado_em)}` : '⏳'}`).join('<br>') || '—'}</td></tr>`).join('');
 }
@@ -339,9 +344,9 @@ $('busca').addEventListener('input', renderMembros);
 $('btn-csv').onclick = () => {
   if (!dadosAdmin) return;
   const camps = Object.fromEntries(dadosAdmin.campanhas.map(c => [c.id, `${c.titulo} - ${c.produto}`]));
-  const linhas = [['nome', 'email', 'telefone', 'cadastro', 'campanha', 'codigo', 'usado_em', 'loja']];
+  const linhas = [['nome', 'email', 'telefone', 'cidade', 'cadastro', 'campanha', 'codigo', 'usado_em', 'loja']];
   for (const m of dadosAdmin.membros) {
-    const base = [m.nome, m.email, m.telefone, fmtDH(m.criado_em)];
+    const base = [m.nome, m.email, m.telefone, nomeCidade(m.cidade), fmtDH(m.criado_em)];
     if (!m.cupons.length) linhas.push([...base, '', '', '', '']);
     for (const k of m.cupons) linhas.push([...base, camps[k.campanha_id] || '', k.token, fmtDH(k.usado_em), k.usado_unidade || '']);
   }
