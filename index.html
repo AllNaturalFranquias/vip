@@ -79,6 +79,7 @@
   .ok-titulo{text-align:center;margin-top:24px}
   .ok-titulo h2{font-size:28px}
   .ok-titulo p{color:var(--sub);margin:8px 0 0;line-height:1.5}
+  .aviso-print{display:block;margin-top:12px;background:#FFF1DE;border:1.5px solid var(--laranja);border-radius:14px;padding:12px 14px;color:#7A4A06;font-size:14px;line-height:1.45;text-align:left}
   .meu-cupom{display:none;margin-top:16px;background:#FFF1DE;border-radius:14px;padding:12px 14px;font-size:14px;color:#7A4A06}
   .meu-cupom a{color:var(--laranja-esc);font-weight:700}
   .hide{display:none!important}
@@ -343,7 +344,9 @@ async function mostrarCupom(token, dados) {
   }
   $('cupom-titulo').textContent = dados.nome ? `${dados.nome}, você é VIP!` : 'Seu cupom VIP';
   $('cupom-sub').innerHTML = dados.novo
-    ? `Você garantiu seu cupom exclusivo. Enviamos uma cópia para <b>${esc(dados.email)}</b>.`
+    ? `Você garantiu seu cupom exclusivo.<span class="aviso-print">📸 <b>Tire um print desta tela agora</b> com o QR code abaixo. ` +
+      `Também enviamos uma cópia para <b>${esc(dados.email)}</b>, mas o e-mail pode demorar alguns minutos para chegar ` +
+      `(confira também o spam).</span>`
     : 'Apresente no caixa de qualquer loja All Natural.';
 
   const textoWa = `🥕 Meu cupom VIP All Natural — ${dados.titulo}: ${dados.produto} (válido até ${val}): ${linkCupom(token)}`;
